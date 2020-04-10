@@ -1,0 +1,31 @@
+.joinContainer {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    background-color: #282c34;
+    min-height: 100vh;
+}
+
+.joinBox {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+}
+
+input {
+    margin-bottom: 20px;
+    width: 200px;
+    height: 30px;
+}
+
+button {
+    width: 200px;
+    height: 30px;
+}
+
+p {
+    color: white;
+}
