@@ -36,8 +36,12 @@ export default function Join() {
                 />
                 <Link
                     onClick={() => {
-                        newUser({ variables: { name, room } });
-                        console.log(1);
+                        newUser({
+                            variables: {
+                                name,
+                                room,
+                            },
+                        });
                     }}
                     to={{
                         pathname: "/room",

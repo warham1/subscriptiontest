@@ -4,11 +4,13 @@ import { getMainDefinition } from "apollo-utilities";
 import { InMemoryCache } from "apollo-cache-inmemory";
 
 const httpLink = new HttpLink({
+    // uri: "http://180.69.196.84:4000",
     uri: "http://localhost:4000",
 });
 
 const wsLink = new WebSocketLink({
-    uri: `ws://localhost:4000/`,
+    // uri: `ws://180.69.196.84:4000/`,
+    uri: "ws://localhost:4000",
     options: {
         reconnect: true,
     },
