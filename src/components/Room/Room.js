@@ -23,7 +23,6 @@ const NEW_EVENT_SUBSCRIPTION = gql`
             type
             user {
                 name
-                room
             }
             chatText
         }
@@ -63,6 +62,7 @@ export default function Room(location) {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error :</p>;
 
+    console.log(data);
     const userlist = data.getUser;
 
     if (users === "") {
