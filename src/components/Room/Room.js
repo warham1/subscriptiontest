@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
-// import { Query } from "react-apollo";
 import { useQuery, useSubscription, useMutation } from "react-apollo-hooks";
 
 import "./Room.css";
@@ -12,28 +11,22 @@ const GET_USER = gql`
     }
 `;
 
-const NEW_USER_SUBSCRIPTION = gql`
-    subscription newUser($room: String!) {
-        newUser(room: $room) {
-            name
-            room
-        }
+const SEND_EVENT_MUTATION = gql`
+    mutation sendEvent($name: String!, $room: String!, $dest: [String], $type: String!, $chatText: String) {
+        sendEvent(name: $name, room: $room, dest: $dest, type: $type, chatText: $chatText)
     }
 `;
 
-const NEW_CHAT_SUBSCRIPTION = gql`
-    subscription newMessage($room: String!) {
-        newMessage(room: $room) {
-            name
-            room
-            text
+const NEW_EVENT_SUBSCRIPTION = gql`
+    subscription newEvent($room: String!, $name: String!) {
+        newEvent(room: $room, name: $name) {
+            type
+            user {
+                name
+                room
+            }
+            chatText
         }
-    }
-`;
-
-const SEND_MESSAGE = gql`
-    mutation sendMessage($room: String!, $name: String!, $text: String!) {
-        sendMessage(room: $room, name: $name, text: $text)
     }
 `;
 
@@ -49,32 +42,23 @@ export default function Room(location) {
         variables: { room: thisroom },
     });
 
-    const [sendMessage] = useMutation(SEND_MESSAGE);
+    const [sendEvent] = useMutation(SEND_EVENT_MUTATION);
 
-    const { loading: subLoading, data: newData } = useSubscription(NEW_USER_SUBSCRIPTION, {
-        variables: { room: thisroom },
-    });
-
-    const { data: newnewData } = useSubscription(NEW_CHAT_SUBSCRIPTION, {
-        variables: { room: thisroom },
+    const { data: eventData } = useSubscription(NEW_EVENT_SUBSCRIPTION, {
+        variables: { room: thisroom, name: myname },
     });
 
     useEffect(() => {
-        if (users !== "" && newData !== undefined) {
-            setUsers([...users, newData.newUser.name]);
+        if (eventData !== undefined) {
+            const EVENT = eventData.newEvent;
+            if (EVENT.type === "TYPE_CHAT") {
+                setChat([...chat, { user: EVENT.user.name, text: EVENT.chatText }]);
+            } else if (EVENT.type === "TYPE_NEW_USER" && users !== "") {
+                setUsers([...users, EVENT.user.name]);
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [newData]);
-
-    useEffect(() => {
-        if (newnewData !== undefined) {
-            setChat([
-                ...chat,
-                { user: newnewData.newMessage.name, text: newnewData.newMessage.text },
-            ]);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [newnewData]);
+    }, [eventData]);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error :</p>;
@@ -113,16 +97,28 @@ export default function Room(location) {
 
     const setChats = (e) => {
         e.preventDefault();
+        console.log("sending message");
 
         if (input) {
-            sendMessage({
+            const re = /^-(\d{1,2})\s(.+)/;
+            const myArray = re.exec(input);
+
+            let dest;
+            let chatText = input;
+
+            if (myArray !== null) {
+                [, dest, chatText] = myArray;
+            }
+
+            sendEvent({
                 variables: {
                     name: myname,
                     room: thisroom,
-                    text: input,
+                    type: "TYPE_CHAT",
+                    dest,
+                    chatText,
                 },
             });
-
             setInput("");
         }
     };

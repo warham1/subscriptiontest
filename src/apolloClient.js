@@ -5,12 +5,14 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 
 const httpLink = new HttpLink({
     // uri: "http://180.69.196.84:4000",
-    uri: "http://localhost:4000",
+    // uri: "http://localhost:4000",
+    uri: "http://35b0571c.jp.ngrok.io",
 });
 
 const wsLink = new WebSocketLink({
     // uri: `ws://180.69.196.84:4000/`,
-    uri: "ws://localhost:4000",
+    // uri: "ws://localhost:4000",
+    uri: "ws://35b0571c.jp.ngrok.io",
     options: {
         reconnect: true,
     },

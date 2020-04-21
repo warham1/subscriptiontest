@@ -12,6 +12,7 @@
         "eslint-config-airbnb": "^18.1.0",
         "graphql": "^15.0.0",
         "graphql-yoga": "^1.18.3",
+        "ngrok": "^3.2.7",
         "react": "^16.13.1",
         "react-apollo": "^3.1.4",
         "react-apollo-hooks": "^0.5.0",
@@ -37,6 +38,7 @@
             "react/jsx-indent": 0,
             "react/jsx-filename-extension": 0,
             "react/jsx-indent-props": 0,
+            "react/jsx-one-expression-per-line": 0,
             "linebreak-style": 0,
             "no-console": 0
         }
